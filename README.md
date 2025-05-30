@@ -1,7 +1,40 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
+## Contributing
 
+We welcome contributions! To get started:
+
+1. **Fork the repository** on GitHub.
+2. **Clone your fork** to your local machine:
+
+    ```bash
+    git clone https://github.com/instuzilla/tutoria.git
+    cd tutoria
+    ```
+
+3. **Create a new branch** for your feature or fix:
+
+    ```bash
+    git checkout -b my-feature
+    ```
+
+4. **Make your changes** and commit them:
+
+    ```bash
+    git add .
+    git commit -m "Describe your changes"
+    ```
+
+5. **Push your branch** to your fork:
+
+    ```bash
+    git push origin my-feature
+    ```
+
+6. **Open a Pull Request** on GitHub and describe your changes.
+
+Thank you for contributing!
 First, run the development server:
 
 ```bash
