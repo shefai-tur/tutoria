@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@plugin "daisyui";
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -27,10 +27,10 @@ body {
 
 /* Customizing  colors */
 @theme {
-  --color-primary: #262626;
-  --color-secondary : #FFFFFF;
-  --color-tertiary: #767676;
-  --color-quaternary: #D8D8D8;
+  --color-primary1: #262626;
+  --color-secondary2 : #FFFFFF;
+  --color-tertiary3: #767676;
+  --color-quaternary4: #D8D8D8;
 
   
       --font-roboto: "Roboto", sans-serif; 
