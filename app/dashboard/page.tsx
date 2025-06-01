@@ -1,6 +1,7 @@
 'use client'
-import { connectToServer } from '@/utils/connect';
- import { signIn, signOut, useSession } from 'next-auth/react';
+import { connectToServer } from '@/utils/genralCall';
+import useLocation from '@/utils/Hooks/LocationHook';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react';
  export default function Home() {
    const { data: session } = useSession();
    const [servData, setServData] = useState<any>(null);
+   const {location, error} = useLocation(session);
 
    useEffect(() => {
     const verifyConnection = async () => {
@@ -23,22 +25,6 @@ import { useEffect, useState } from 'react';
 
    },[session]);
 
-   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log('Current position:', position);
-        // You can send this position to your server or use it as needed
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
-      }
-    )
-   }, []);
   
 
    if (session) {
@@ -54,7 +40,7 @@ import { useEffect, useState } from 'react';
               <p>Loading server data...</p>
             )}
             </div>
-         <button onClick={() => signOut()}>Sign out</button>
+         <button onClick={() => signOut()} className='bg-amber-400 text-slate-50 rounded-md p-2 outline cursor-pointer'>Sign out</button>
        </div>
      );
    }
@@ -62,7 +48,7 @@ import { useEffect, useState } from 'react';
    return (
      <div>
        Not signed in <br />
-       <button onClick={() => signIn('google')}>Sign in with Google</button>
+       <button onClick={() => signIn()} className='bg-green-400 text-slate-50 rounded-md p-2 outline cursor-pointer'>Sign in</button>
      </div>
    );
  }

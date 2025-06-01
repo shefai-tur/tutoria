@@ -56,8 +56,8 @@ export class FetchApi {
         return this.request<T>(endpoint, { method: 'GET', params, headers });
     }
 
-    static post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>) {
-        return this.request<T>(endpoint, { method: 'POST', body, headers });
+    static post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>,params?: Record<string, string | number>) {
+        return this.request<T>(endpoint, { method: 'POST', body, headers, params });
     }
 
     static put<T = any>(endpoint: string, body?: any, headers?: Record<string, string>) {
@@ -77,8 +77,3 @@ export class FetchApi {
  * Example usage:
  */
 
-
-// GET request with query params
-FetchApi.get('/users', { page: 1, limit: 10 })
-    .then(users => console.log('Users:', users))
-    .catch(error => console.error('Error:', error));
