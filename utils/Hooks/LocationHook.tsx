@@ -10,6 +10,7 @@ interface LocationPosition {
 
 const useLocation = (session: any) => {
     const [location, setLocationState] = useState<LocationPosition | null>(null);
+    const [shouldSendLocation, setShouldSendLocation] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -38,7 +39,6 @@ const useLocation = (session: any) => {
                     setLocationState({ latitude, longitude, accuracy });
                     // Store location in localStorage
                     const prevLocationStr = localStorage.getItem('user_location');
-                    let shouldSendLocation = true;
 
                     if (prevLocationStr) {
                         try {
@@ -58,7 +58,7 @@ const useLocation = (session: any) => {
                             const distance = R * c;
 
                             if (distance <= 200) {
-                                shouldSendLocation = false;
+                                setShouldSendLocation(false);
                             }
                         } catch (e) {
                             // Ignore parse errors and proceed to send location
@@ -67,7 +67,7 @@ const useLocation = (session: any) => {
 
                     // Save current location for future checks
                     localStorage.setItem('user_location', JSON.stringify({ latitude, longitude, accuracy }));
-
+                    console.log(shouldSendLocation ? 'Sending location to server' : 'Not sending location, within 200m of previous location');
                     if (!shouldSendLocation) return;
                     const idToken = (session as any)?.id_token;
                     if (session && idToken) {
