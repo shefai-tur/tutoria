@@ -1,6 +1,6 @@
 "use client";
 import { FcGoogle } from "react-icons/fc";
-
+import Link from "next/link";
 const SignUpModel = () => {
   return (
     <div>
@@ -11,8 +11,11 @@ const SignUpModel = () => {
         <div className="modal-box text-primary1" >
           <h3 className="font-bold text-lg ">Hello! Sign up to Tutoria</h3>
           <div className="my-5 py-4 flex items-center justify-center border border-primary1 rounded-lg bg-primary1 text-secondary2 hover:bg-tertiary3  transition-colors duration-300 cursor-pointer">
+            <Link href="/profile">
             <FcGoogle />
             <span className="ml-4 block">Sign up with Google</span>
+            </Link>
+            
           </div>
           
           <div className="modal-action">
