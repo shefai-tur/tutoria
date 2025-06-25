@@ -19,7 +19,7 @@ const PersonalInfo = () => {
               <input
                 type="text"
                 placeholder="Enter your full name "
-                className=" border border-quaternary4 rounded-sm outline-0 w-full p-1.5 "
+                className=" border-2 border-dashed border-quaternary4 rounded-sm outline-0 w-full p-1.5 "
               />
             </div>
             <div className="  mb-4">
