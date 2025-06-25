@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { FaUserShield } from "react-icons/fa";
 import SignUpModel from "./SignUpModel";
-
+import Link from "next/link";
 const Header = () => {
   return (
     <div>
@@ -15,9 +15,11 @@ const Header = () => {
             <li className="font-DMSans font-normal  text-sm text-quaternary4 hover:text-secondary2  hover:font-bold  hover:border-b-2 hover:border-tertiary3 transition-colors duration-300 cursor-pointer">
               TUITIONS{" "}
             </li>
+            <Link href="/tutors">
             <li className="font-DMSans font-normal  text-sm text-quaternary4 hover:text-secondary2  hover:font-bold  hover:border-b-2 hover:border-tertiary3 transition-colors duration-300 cursor-pointer">
               TUTORS{" "}
             </li>
+            </Link>
             <li className="font-DMSans font-normal  text-sm text-quaternary4 hover:text-secondary2  hover:font-bold  hover:border-b-2 hover:border-tertiary3 transition-colors duration-300 cursor-pointer">
               COURSES{" "}
             </li>
