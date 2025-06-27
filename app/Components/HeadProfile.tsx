@@ -32,22 +32,7 @@ const HeadProfile = ({ activeSection, onSectionChange }: HeadProfileProps) => {
       </div>
     </div>
 
-//    <div>
-//      <div className="grid grid-cols-3 gap-4 ">
-//         <div className='border border-primary1 bg-quaternary4  py-2.5  px-20 rounded-lg shadow-md'>
-//             <FaGraduationCap className=" text-5xl  mx-auto"/>
-//             <p className="font-DMSans font-medium text-base text-center mt-1.5">Educational info</p>
-//         </div>
-//         <div className='border border-primary1 bg-quaternary4  py-2.5  px-20 rounded-lg shadow-md'>
-//             <GiTeacher className=" text-5xl  mx-auto"/>
-//             <p className="font-DMSans font-medium text-base text-center mt-1.5">Tuition-info</p>
-//         </div>
-//         <div className='border border-primary1 bg-quaternary4  py-2.5  px-20 rounded-lg shadow-md'>
-//             <BsFillPersonVcardFill className=" text-5xl  mx-auto"/>
-//             <p className="font-DMSans font-medium text-base text-center mt-1.5">Personal-info</p>
-//         </div>
-//     </div>
-//    </div>
+
   )
 }
 
