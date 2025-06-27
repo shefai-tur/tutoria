@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FaUserShield } from "react-icons/fa";
 import SignUpModel from "./SignUpModel";
 import Link from "next/link";
+
 const Header = () => {
   return (
     <div>
@@ -12,9 +13,11 @@ const Header = () => {
         </div>
         <div>
           <ul className="flex space-x-8 ">
+            <Link href="/tutions">
             <li className="font-DMSans font-normal  text-sm text-quaternary4 hover:text-secondary2  hover:font-bold  hover:border-b-2 hover:border-tertiary3 transition-colors duration-300 cursor-pointer">
               TUITIONS{" "}
             </li>
+            </Link>
             <Link href="/tutors">
             <li className="font-DMSans font-normal  text-sm text-quaternary4 hover:text-secondary2  hover:font-bold  hover:border-b-2 hover:border-tertiary3 transition-colors duration-300 cursor-pointer">
               TUTORS{" "}
