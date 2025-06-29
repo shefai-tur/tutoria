@@ -10,11 +10,11 @@ const PersonalInfo = () => {
           Update your profile
         </h2>
       </div>
-<div className="border border-quaternary4 p-10 mt-10">
+<div className="border border-quaternary4 px-10 py-5 mt-10">
       <div className=" flex justify-between ">
       
           <div className=" pr-5  w-1/2 ">
-            <div className="   mb-4">
+            <div className=" mt-10  mb-4">
               <p className=" font-DMSans font-normal text-xl ">Full Name</p>
               <input
                 type="text"
@@ -95,7 +95,7 @@ const PersonalInfo = () => {
       
 
         <div className="  pl-5 w-1/2">
-          <h2 className=" font-DMSans font-semibold text-xl mt-1.5 mb-4">
+          <h2 className=" font-DMSans font-semibold text-xl  mb-4 border-b-1 border-quaternary4 w-34">
             Parental Info{" "}
           </h2>
           <div className="  mb-4">
