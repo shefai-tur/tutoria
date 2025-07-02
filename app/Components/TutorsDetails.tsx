@@ -5,7 +5,7 @@ import ViewTutorProfile from "./ViewTutorProfile";
 
 const TutorsDetails = () => {
   return (
-    <div className="container mx-auto p-5">
+    <div className="container mx-auto ">
       <dialog id="ViewProfileModal" className="modal">
         <div className="modal-box  w-11/12 max-w-5xl text-primary1">
           <div className="modal-action mt-1">
@@ -18,7 +18,7 @@ const TutorsDetails = () => {
           </div>
 
          
-            <div className="flex gap-20">
+            <div className="flex gap-10">
               <div className="w-1/4">
                 <ViewSidebarProfile />
               </div>

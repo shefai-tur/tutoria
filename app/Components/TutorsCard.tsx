@@ -4,6 +4,7 @@ import TutorsDetails from "./TutorsDetails";
 
 const TutorsData = [
   {
+    id:1,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -18,6 +19,7 @@ const TutorsData = [
     price: "5000 BDT",
   },
   {
+    id:2,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -32,6 +34,7 @@ const TutorsData = [
     price: "5000 BDT",
   },
   {
+     id:3,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -46,6 +49,7 @@ const TutorsData = [
     price: "5000 BDT",
   },
   {
+     id:4,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -60,6 +64,7 @@ const TutorsData = [
     price: "5000 BDT",
   },
   {
+     id:5,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -74,6 +79,7 @@ const TutorsData = [
     price: "5000 BDT",
   },
   {
+     id:6,
     img: "/MyImg.jpg",
     name: "Shefaitur rahman Noyon",
     institute: "East Delta University",
@@ -93,7 +99,7 @@ const TutorsCard = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 ">
       {TutorsData.map((tutor, index) => (
         <div
-          key={index}
+          key={tutor.id}
           className="card bg-base-100 shadow-xl  border border-quaternary4 rounded-lg transition-transform transform hover:scale-105"
         >
           <figure className="px-10 pt-5">
@@ -137,16 +143,6 @@ const TutorsCard = () => {
               {tutor.price}
             </p>
           </div>
-          {/* <div className="flex justify-between px-5 mt-2">
-            <p className="font-DMSans font-normal text-base text-primary1">
-              <span className="font-semibold mr-1">Medium:</span>
-              {tutor.medium}
-            </p>
-            <p className="font-DMSans font-normal text-base text-primary1">
-              <span className="font-semibold mr-1">Expertise:</span>
-              {tutor.expertise}
-            </p>
-          </div> */}
           <div>
             <div className="card-actions justify-center my-4">
               <button
