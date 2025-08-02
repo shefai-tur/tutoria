@@ -30,29 +30,29 @@ const ViewSidebarProfile = () => {
       </div>
       <div>
         {TutorData.map((tutor, index) => (
-          <ul className="mt-10">
-            <li
-              key={index}
-              className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4"
-            >
-              <span className="mr-5 font-semibold">ID</span> {tutor.id}
-            </li>
-            <li className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
-              <span className="mr-5 font-semibold">Qualification</span>{" "}
-              {tutor.qualification}
-            </li>
-            <li className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
-              <span className="mr-5 font-semibold">Expertise</span>{" "}
-              {tutor.expertise}
-            </li>
-            <li className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
-              <span className="mr-5 font-semibold">Gendar</span> {tutor.gendar}
-            </li>
-            <li className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
-              <span className="mr-5 font-semibold">Distance</span>{" "}
-              {tutor.distance}
-            </li>
-          </ul>
+          <div className="mt-10" key={tutor.id}>
+            <div className="flex font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
+              <p className="w-34 font-semibold">ID</p>
+              <p>{tutor.id}</p>
+            </div>
+            <div className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
+              <p className=" w-34 font-semibold">Qualification</p>{" "}
+              <p> {tutor.qualification}</p>
+             
+            </div>
+            <div className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
+              <p className="w-34 font-semibold">Expertise</p>{" "}
+            <p>  {tutor.expertise}</p>
+            </div>
+            <div className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
+              <p className="w-34 font-semibold">Gendar</p> 
+              <p>{tutor.gendar}</p>
+            </div>
+            <div className=" flex items-center  font-DMSans font-normal text-primary1 text-lg px-5 py-2  border-b border-quaternary4">
+              <p className="w-34 font-semibold">Distance</p>{" "}
+           <p>   {tutor.distance}</p>
+            </div>
+          </div>
         ))}
       </div>
     </div>
