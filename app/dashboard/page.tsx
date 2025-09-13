@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
     const verifyConnection = async () => {
       const idToken = (session as any)?.id_token;
       if(session && idToken) {
+        console.log(idToken);
         const response = await connectToServer(idToken)
         .then(data => {
           setServData(data.detail);

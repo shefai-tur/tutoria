@@ -14,88 +14,119 @@ const useLocation = (session: any) => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const getPermissionAndLocation = async () => {
-            if (!navigator.geolocation) {
-                setError('Geolocation is not supported by your browser');
+       const getPermissionAndLocation = async () => {
+    if (!navigator.geolocation) {
+        setError('Geolocation is not supported by your browser');
+        return;
+    }
+
+    // Check for permission
+    if (navigator.permissions) {
+        try {
+            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+            if (permissionStatus.state === 'denied') {
+                setError('Location permission denied');
+                return;
+            }
+        } catch (err) {
+            // ignore if permissions API not supported
+        }
+    }
+
+    // Force high-accuracy one-time location fix before watch
+    // navigator.geolocation.getCurrentPosition(
+    //     (position) => {
+    //         console.log("Initial high-accuracy fix:", position.coords);
+    //     },
+    //     (error) => {
+    //         setError('Error getting initial location: ' + error.message);
+    //     },
+    //     {
+    //         enableHighAccuracy: true,
+    //         timeout: 60000, // allow up to 1 min for GPS
+    //         maximumAge: 0,
+    //     }
+    // );
+
+    // Continuous tracking
+    const geoId = navigator.geolocation.watchPosition(
+        async (position) => {
+            const { latitude, longitude, accuracy } = position.coords;
+            console.log("Got position:", latitude, longitude, "Accuracy:", accuracy);
+
+            // Ignore low-accuracy fixes (>50m)
+            if (accuracy > 50) {
+                setError("Location accuracy too low, waiting for better fix...");
                 return;
             }
 
-            // Check for permissions API support
-            if (navigator.permissions) {
+            setLocationState({ latitude, longitude, accuracy });
+
+            // Previous location check
+            const prevLocationStr = localStorage.getItem('user_location');
+            if (prevLocationStr) {
                 try {
-                    const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
-                    if (permissionStatus.state === 'denied') {
-                        setError('Location permission denied');
-                        return;
+                    const prevLocation: LocationPosition = JSON.parse(prevLocationStr);
+
+                    // Haversine distance
+                    const toRad = (val: number) => (val * Math.PI) / 180;
+                    const R = 6371000;
+                    const dLat = toRad(latitude - prevLocation.latitude);
+                    const dLon = toRad(longitude - prevLocation.longitude);
+                    const lat1 = toRad(prevLocation.latitude);
+                    const lat2 = toRad(latitude);
+
+                    const a = Math.sin(dLat / 2) ** 2 +
+                        Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    const distance = R * c;
+
+                    if (distance <= 200) {
+                        setShouldSendLocation(false);
                     }
-                } catch (err) {
-                    // Permissions API not available or failed, fallback to geolocation prompt
+                } catch (e: any) {
+                    setError(e.meassage);
                 }
             }
 
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const { latitude, longitude, accuracy } = position.coords;
-                    setLocationState({ latitude, longitude, accuracy });
-                    // Store location in localStorage
-                    const prevLocationStr = localStorage.getItem('user_location');
+            // Save latest location
+            localStorage.setItem('user_location', JSON.stringify({ latitude, longitude, accuracy }));
 
-                    if (prevLocationStr) {
-                        try {
-                            const prevLocation: LocationPosition = JSON.parse(prevLocationStr);
-                            // Haversine formula to calculate distance in meters
-                            const toRad = (value: number) => (value * Math.PI) / 180;
-                            const R = 6371000; // Earth radius in meters
-                            const dLat = toRad(latitude - prevLocation.latitude);
-                            const dLon = toRad(longitude - prevLocation.longitude);
-                            const lat1 = toRad(prevLocation.latitude);
-                            const lat2 = toRad(latitude);
+            if (!shouldSendLocation) {
+                console.log("Not sending, within 200m");
+                return;
+            }
 
-                            const a =
-                                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                            const distance = R * c;
+            const idToken = (session as any)?.id_token;
+            if (session && idToken) {
+                const locationString = `${latitude},${longitude},${accuracy.toFixed(2)}`;
+                try {
+                    const response = await setLocation(idToken, locationString);
+                    console.log("Location sent:", response);
 
-                            if (distance <= 200) {
-                                setShouldSendLocation(false);
-                            }
-                        } catch (e) {
-                            // Ignore parse errors and proceed to send location
+                    if (response.update_required) {
+                        if (window.confirm("Your location seems outdated. Update now?")) {
+                            await setLocation(idToken, locationString, { update: "true" });
                         }
                     }
-
-                    // Save current location for future checks
-                    localStorage.setItem('user_location', JSON.stringify({ latitude, longitude, accuracy }));
-                    console.log(shouldSendLocation ? 'Sending location to server' : 'Not sending location, within 200m of previous location');
-                    if (!shouldSendLocation) return;
-                    const idToken = (session as any)?.id_token;
-                    if (session && idToken) {
-                        const locationString = `${latitude},${longitude},${accuracy.toFixed(2)}`;
-                        try {
-                            const response = await setLocation(idToken, locationString);
-                            console.log('Location sent successfully:', response);
-                            if(response.update_required == true){
-                                if (window.confirm('Your location seems outdated. Do you want to update your location?')) {
-                                    // Optionally, you can trigger another location update or handle as needed
-                                    await setLocation(idToken, `${latitude},${longitude},${accuracy.toFixed(2)}`, { update: 'true' });
-                                }
-                            }
-                        } catch (apiError) {
-                            setError('Error sending location to server');
-                        }
-                    }
-                },
-                (geoError) => {
-                    setError('Error getting location: ' + geoError.message);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0,
+                } catch (apiError) {
+                    setError("Error sending location to server");
                 }
-            );
-        };
+            }
+        },
+        (geoError) => {
+            setError("Error getting location: " + geoError.message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 60000,
+            maximumAge: 0,
+        }
+    );
+
+    return () => navigator.geolocation.clearWatch(geoId);
+};
+
 
         getPermissionAndLocation();
     }, [session, setLocation]);

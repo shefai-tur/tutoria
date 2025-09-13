@@ -19,6 +19,8 @@
 
 # production
 /build
+/migration
+/staticfiles
 
 # misc
 .DS_Store
