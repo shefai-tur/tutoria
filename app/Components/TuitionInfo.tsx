@@ -2,14 +2,30 @@
 import TimeSlotSelector from "./TimeSlotSelector";
 import SelectTag from "./SelectTag";
 import { MdAddBox } from "react-icons/md";
+import { useState,FormEvent } from "react";
 
 const TuitionInfo = () => {
+ const [isLoading, setIsLoading] = useState<boolean>(false)
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setIsLoading(true) //
+   try {
+      const formData = new FormData(event.currentTarget)
+      console.log(formData);
+      
+   }catch(error){
+console.error(error)
+   } finally {
+      setIsLoading(false) 
+    }
+    
+  }
   
   return (
     <div className=" mt-8">
      
-      
+     <form onSubmit={handleSubmit}>
       <div className="w-48">
         <h1 className=" font-DMSans font-semibold text-2xl  border-b-2 border-quaternary4">
           {" "}
@@ -97,6 +113,7 @@ const TuitionInfo = () => {
             </p>
             <input
               type="text"
+              name="subjects" 
               placeholder="Enter your preferred subjects"
               className=" border border-quaternary4 rounded-sm  w-full p-1.5 "
             />
@@ -107,6 +124,7 @@ const TuitionInfo = () => {
             </p>
                <input
               type="number"
+              name="experience" 
               placeholder="Enter your experience"
               className=" border border-quaternary4 rounded-sm  w-full p-1.5 "
             />
@@ -142,10 +160,11 @@ const TuitionInfo = () => {
         </div>
       </div>
       <div className=" mt-5 text-center">
-        <button className=" bg-primary1 text-white font-DMSans font-semibold text-lg px-10 py-2 rounded-md  hover:bg-tertiary3  transition-colors duration-300">
-          Next
+        <button  type="submit" disabled={isLoading} className=" bg-primary1 text-white font-DMSans font-semibold text-lg px-10 py-2 rounded-md  hover:bg-tertiary3  transition-colors duration-300">
+         {isLoading ? 'Loading...' : 'Next'}  
         </button>
       </div>
+      </form>   
     </div>
   );
 };

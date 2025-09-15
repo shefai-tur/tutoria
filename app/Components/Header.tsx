@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import { FaUserShield } from "react-icons/fa";
-import SignUpModel from "./SignUpModel";
 import Link from "next/link";
 
 const Header = () => {
+ 
   return (
     <div>
       <div className="flex justify-between items-center p-5 bg-primary1 text-secondary2">
@@ -29,20 +29,12 @@ const Header = () => {
           </ul>
         </div>
         <div>
-          <button
-            onClick={() => {
-              const modal = document.getElementById(
-                "gooogle_signup_modal_1"
-              ) as HTMLDialogElement | null;
-              if (modal) modal.showModal();
-            }}
-          >
+          <Link href="api/auth/signin">
             <FaUserShield
               className="text-quaternary4 hover:text-secondary2 transition-colors duration-300 cursor-pointer"
               size={25}
             />
-          </button>
-          <SignUpModel />
+             </Link>
         </div>
       </div>
     </div>
