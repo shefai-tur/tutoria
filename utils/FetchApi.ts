@@ -20,6 +20,7 @@ export class FetchApi {
     private static buildUrl(url: string, params?: Record<string, string | number>): string {
         if (!params) return url;
         const query = new URLSearchParams(params as Record<string, string>).toString();
+        console.log('Built URL:', query ? `${url}?${query}` : url);     
         return query ? `${url}?${query}` : url;
     }
 
@@ -28,6 +29,7 @@ export class FetchApi {
         options: FetchApiOptions = {}
     ): Promise<T> {
         const { method = 'GET', headers = {}, body, params } = options;
+        console.log("Options:", options);
         const url = this.buildEndpointUrl(endpoint);
         const fetchUrl = this.buildUrl(url, params);
 
@@ -47,6 +49,7 @@ export class FetchApi {
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
+            
         }
 
         return response.json();

@@ -28,8 +28,13 @@ import { useEffect, useState } from 'react';
 
   
 
+   useEffect(() => {
+     if (session) {
+       console.log('Session:', session);
+     }
+   }, [session]);
+
    if (session) {
-    console.log('Session:', session);
      return (
        <div>
          Signed in as {session.user?.email} <br />
@@ -45,7 +50,7 @@ import { useEffect, useState } from 'react';
        </div>
      );
    }
-
+  // If not signed in, show nothing here. The code below will render the "Not signed in" UI.
    return (
      <div>
        Not signed in <br />
