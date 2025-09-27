@@ -6,7 +6,8 @@ import  {useSession} from 'next-auth/react';
 
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { useGradesByMedium,useMedium } from "@/utils/Hooks/MediumHook";
+import { useGradesByMedium,useMedium } from "@/utils/Hooks/FormDataHook";
+import Loading from "./Loading";
 type FormType = z.infer<typeof formSchema>;
 
 const subjects = ["Math", "Physics", "Chemistry", "Biology", "English"];
@@ -35,13 +36,18 @@ const CreateTeacher = () => {
 			defaultValues,
 	});
 
-	const {mediums, loading, error} = useMedium();
-	const  {grades} = useGradesByMedium('1'); 
-
-		// Watch arrays for reactive checkbox UI
+	// Watch arrays for reactive checkbox UI
 		const watchedSubjects = watch("subject_list");
 		const watchedMediums = watch("medium_list");
 		const watchedGrades = watch("grade_list");
+
+
+
+	const {mediums, loading: mediumsLoading, error: mediumsError} = useMedium();
+	const  {grades, loading: gradesLoading, error: gradesError} = useGradesByMedium({medium_id: watchedMediums}); 
+	
+
+		
 
 		const handleArrayChange = (name: keyof FormType, value: string) => {
 			const arr = watch(name) as string[];
@@ -146,6 +152,8 @@ const CreateTeacher = () => {
 
 					<div className="flex items-center mb-4">
 						<p className="font-DMSans font-normal text-xl w-52">Medium</p>
+						{mediumsLoading ?
+					<Loading /> : mediumsError ? <p className="text-red-500">Error loading mediums</p> : mediums && mediums.length > 0 && (
 						<div className="w-full flex gap-2">
 							{mediums.map((medium) => (
 								<label key={medium.id} className="inline-flex items-center">
@@ -157,13 +165,16 @@ const CreateTeacher = () => {
 									<span className="ml-2">{medium.name}</span>
 								</label>
 							))}
-						</div>
+						</div>)
+}
 					</div>
 					{errors.medium_list && <p className="text-red-500 text-sm mb-2">{errors.medium_list.message}</p>}
 
 					<div className="flex items-center mb-4">
 						<p className="font-DMSans font-normal text-xl w-52">Grades</p>
-						<div className="w-full flex flex-wrap gap-2">
+						{gradesLoading ?
+					<Loading /> : grades && grades.length > 0 &&
+								<div className="w-full flex flex-wrap gap-2">
 							{grades.map((grade) => (
 								<label key={grade.id} className="inline-flex items-center">
 									<input
@@ -175,6 +186,8 @@ const CreateTeacher = () => {
 								</label>
 							))}
 						</div>
+					}
+						
 					</div>
 					{errors.grade_list && <p className="text-red-500 text-sm mb-2">{errors.grade_list.message}</p>}
 

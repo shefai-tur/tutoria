@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FaUserShield } from "react-icons/fa";
 import SignUpModel from "./SignUpModel";
 import Link from "next/link";
+import { SessionProvider } from "next-auth/react";
 
 const Header = () => {
   return (
@@ -29,6 +30,7 @@ const Header = () => {
           </ul>
         </div>
         <div>
+        
           <button
             onClick={() => {
               const modal = document.getElementById(
@@ -42,7 +44,9 @@ const Header = () => {
               size={25}
             />
           </button>
+          <SessionProvider>
           <SignUpModel />
+          </SessionProvider>
         </div>
       </div>
     </div>

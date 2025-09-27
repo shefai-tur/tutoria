@@ -1,10 +1,10 @@
 'use server';
 import { FetchApi } from "./FetchApi";
 
-export async function getGradesbyMedium(token: string,  params: {medium_id: string}) {
+export async function getGradesbyMedium(token: string,  body: {medium_id: string[]} ) {
     if (token) {
         try {
-            const response = await FetchApi.get('/grade-by-medium/',params,{'Authorization': `Bearer ${token}`});
+            const response = await FetchApi.post('/grade-by-medium/',body,{'Authorization': `Bearer ${token}`}, {});
          
             return response;
         } catch (error) {

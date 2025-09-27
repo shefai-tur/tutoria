@@ -55,8 +55,8 @@ export class FetchApi {
         return response.json();
     }
 
-    static get<T = any>(endpoint: string, params?: Record<string, string | number>, headers?: Record<string, string>) {
-        return this.request<T>(endpoint, { method: 'GET', params, headers });
+    static get<T = any>(endpoint: string, params?: Record<string, string | number>, headers?: Record<string, string>, body?: any) {
+        return this.request<T>(endpoint, { method: 'GET', params, headers, body });
     }
 
     static post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>,params?: Record<string, string | number>) {

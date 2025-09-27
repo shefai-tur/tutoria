@@ -7,6 +7,6 @@ export const formSchema = z.object({
     gender: z.enum(['male', 'female', 'other']),
     teaching_mode: z.enum(['online', 'offline', 'both']),
     subject_list: z.array(z.string()).min(1, 'At least one subject must be selected'),
-    medium_list: z.array(z.enum(['english', 'bangla', 'both'])).min(1, 'At least one medium must be selected'),
+    medium_list: z.array(z.string()).min(1, 'At least one subject must be selected'),
     grade_list: z.array(z.string()).min(1, 'At least one grade must be selected')
 });

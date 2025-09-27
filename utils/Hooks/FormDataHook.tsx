@@ -32,7 +32,7 @@ export const useMedium = () => {
    return { mediums, loading, error };
 };
 
-export const useGradesByMedium = (medium_id: string) => {
+export const useGradesByMedium = ({medium_id}: {medium_id: string[]}) => {
     const [grades, setGrades] = useState<[] | gradeType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -41,14 +41,26 @@ export const useGradesByMedium = (medium_id: string) => {
      useEffect(() => {
         const idToken = (session as any)?.id_token;
         async function fetchGrades() {
+            setLoading(true);
+            setError(null);
+            setGrades([]);
             if (session && idToken) {
                 const response = await getGradesbyMedium(idToken, {medium_id})
                 .then((data: gradeType[]) => {
                     setGrades(data);
-                }).catch((error: any) => console.log('Error connecting to server:', error));
+                }).catch((error: any) => {
+                    console.log('Error connecting to server:', error);
+                    setError('Failed to fetch grades');
+                }).finally(() => {
+                    setLoading(false);
+                }); 
             }
         }
-        fetchGrades();
+        if(medium_id && medium_id.length > 0) {
+            fetchGrades();
+        }else{
+            setGrades([]);
+        }
 
     }, [medium_id, session]);
     return { grades, loading, error };
