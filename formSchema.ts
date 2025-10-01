@@ -8,5 +8,6 @@ export const formSchema = z.object({
     teaching_mode: z.enum(['online', 'offline', 'both']),
     subject_list: z.array(z.string()).min(1, 'At least one subject must be selected'),
     medium_list: z.array(z.string()).min(1, 'At least one subject must be selected'),
-    grade_list: z.array(z.string()).min(1, 'At least one grade must be selected')
+    grade_list: z.array(z.string()).min(1, 'At least one grade must be selected'),
+    preferred_distance: z.number().min(1, 'Preferred distance must be at least 1 km').max(100, 'Preferred distance must be at most 100 km'),
 });

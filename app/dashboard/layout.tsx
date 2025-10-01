@@ -1,5 +1,4 @@
-'use client'
-import { SessionProvider } from 'next-auth/react';
+
 import React, { ReactNode } from 'react';
 
 
@@ -12,12 +11,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="dashboard-layout">
             {/* You can add a sidebar or header here */}
             <main>
-                <SessionProvider refetchInterval={5 * 60}>
-        
-                    {children}
-                </SessionProvider>
-                
-                </main>
+                {children}
+            </main>
         </div>
     );
 };

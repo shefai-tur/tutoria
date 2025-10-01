@@ -29,7 +29,6 @@ export class FetchApi {
         options: FetchApiOptions = {}
     ): Promise<T> {
         const { method = 'GET', headers = {}, body, params } = options;
-        console.log("Options:", options);
         const url = this.buildEndpointUrl(endpoint);
         const fetchUrl = this.buildUrl(url, params);
 
@@ -48,8 +47,16 @@ export class FetchApi {
         const response = await fetch(fetchUrl, fetchOptions);
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-            
+            let errorMessage = 'Server error';
+            try {
+                const errorData = await response.json();
+                if (errorData && errorData.detail) {
+                    errorMessage = errorData.detail;
+                }
+            } catch (e) {
+                // Ignore JSON parse errors, use default message
+            }
+            throw new Error(errorMessage);
         }
 
         return response.json();

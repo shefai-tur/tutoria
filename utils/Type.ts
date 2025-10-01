@@ -9,3 +9,12 @@ export type mediumType = {
   id: number;
   name: string;
 };
+
+export type subjectType = {
+  id: number;
+  name: string;
+  description: string;
+  subject_code: string;
+  grade: string;
+};
+

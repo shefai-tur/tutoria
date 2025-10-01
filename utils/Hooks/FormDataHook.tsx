@@ -1,8 +1,8 @@
 'use client'
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";    
-import { getGradesbyMedium, getMediums } from "../fetchFormInfo";
-import { gradeType, mediumType } from "../Type";
+import { getGradesbyMedium, getMediums, getSubjects } from "../fetchFormInfo";
+import { gradeType, mediumType, subjectType } from "../Type";
 
 
 
@@ -16,11 +16,18 @@ export const useMedium = () => {
      useEffect(() => {
         const idToken = (session as any)?.id_token;
         async function fetchData() {
+            setLoading(true);
+            setError(null);
+            setMediums([]);
+            setLoading(false);
             if (session && idToken) {
                 const response = await getMediums(idToken)
                 .then((data: mediumType[]) => {
                     setMediums(data);
-                }).catch(error => console.log('Error connecting to server:', error));
+                }).catch(error => console.log('Error connecting to server:', error))
+                .finally(() => {
+                    setLoading(false);
+                });
             }
         }    
         fetchData();    
@@ -64,4 +71,40 @@ export const useGradesByMedium = ({medium_id}: {medium_id: string[]}) => {
 
     }, [medium_id, session]);
     return { grades, loading, error };
+};
+
+
+export const useSubjects = ({grade_id}: {grade_id: string[]}) => {
+    const [subjects, setSubjects] = useState<[] | subjectType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const {data: session} = useSession();
+
+     useEffect(() => {
+        const idToken = (session as any)?.id_token;
+        async function fetchGrades() {
+            setLoading(true);
+            setError(null);
+            setSubjects([]);
+            if (session && idToken) {
+                const response = await getSubjects(idToken, {grade_id})
+                .then((data: subjectType[]) => {
+                    setSubjects(data);
+                }).catch((error: any) => {
+                    console.log('Error connecting to server:', error);
+            
+                    setError(error.message || 'Failed to fetch subjects');
+                }).finally(() => {
+                    setLoading(false);
+                });
+            }
+        }
+        if(grade_id && grade_id.length > 0) {
+            fetchGrades();
+        }else{
+            setSubjects([]);
+        }
+
+    }, [grade_id, session]);
+    return { subjects, loading, error };
 };
