@@ -2,6 +2,7 @@
 import TimeSlotSelector from "./TimeSlotSelector";
 import SelectTag from "./SelectTag";
 import { MdAddBox } from "react-icons/md";
+import Availability from "./Availability";
 
 const TuitionInfo = () => {
 
@@ -22,8 +23,9 @@ const TuitionInfo = () => {
       <div className=" mt-5 border border-quaternary4 p-12 flex justify-between ">
         <div className=" w-2/5 ">
         <div className="flex flex-col gap-2 mb-10">
-            <TimeSlotSelector />
-            <p className="text-xl mx-auto"><MdAddBox/></p>
+            {/* <TimeSlotSelector /> */}
+            <Availability />
+            
           </div>
           <div className="  mb-16">
             <p className=" font-DMSans font-normal text-xl mb-5 border-b-2 border-quaternary4">

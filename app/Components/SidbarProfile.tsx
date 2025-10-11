@@ -7,6 +7,7 @@ import { TbCalendarUser } from "react-icons/tb";
 import { IoMdNotifications,IoMdSettings ,IoMdLogOut } from "react-icons/io";
 import { MdPayment ,MdVerified } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import ProfileSkeleton from "./Skeleton/ProfileSkeleton";
 
 
 const SidbarProfile = () => {
@@ -14,10 +15,14 @@ const SidbarProfile = () => {
   const  {data: session} = useSession();
   return (
     <div className=" w-64  border border-quaternary4 bg-white rounded-lg shadow-md ">
+      {session?.user?.image === undefined ? (
+        <ProfileSkeleton /> ): 
       <div className=" w-34 h-34 mx-auto mt-5 border rounded-full relative ">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <Image
           className="w-34 h-34 rounded-full"
-          src={session?.user?.image || "https://placehold.co/400x400?text=profile+image&font=roboto"}
+          
+          src={session?.user?.image ?? "/default-profile.png"}
           width={136}
           height={136}
           alt="Picture of the author"
@@ -25,6 +30,8 @@ const SidbarProfile = () => {
         />
         <FaCamera className=" mx-auto text-3xl absolute bottom-0 left-14 " />
       </div>
+      }
+      
       <div className="font-DMSans font-bold text-primary1 text-2xl text-center mt-5 px-2">
         <h2>{session?.user?.name || "Unknown User"}</h2>
         <h2> (TS-126841)</h2>

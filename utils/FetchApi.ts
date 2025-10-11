@@ -1,3 +1,5 @@
+import { error } from "console";
+
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export interface FetchApiOptions {
@@ -52,6 +54,8 @@ export class FetchApi {
                 const errorData = await response.json();
                 if (errorData && errorData.detail) {
                     errorMessage = errorData.detail;
+                }else if(response.statusText) {
+                    errorMessage = response.statusText;
                 }
             } catch (e) {
                 // Ignore JSON parse errors, use default message

@@ -18,3 +18,8 @@ export type subjectType = {
   grade: string;
 };
 
+export type availabilityType = {
+  start: string;
+  end: string;
+  days: string[];
+};
