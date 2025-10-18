@@ -12,6 +12,7 @@ const sections = [
   { key: "tuition", icon: <GiTeacher className="text-5xl mx-auto" />, label: "Tuition-info" },
   { key: "personal", icon: <BsFillPersonVcardFill className="text-5xl mx-auto" />, label: "Personal-info" },
   { key: "register", icon: <FaWpforms className="text-5xl mx-auto" />, label: "Register as a teacher" },
+  { key: "edit", icon: <FaWpforms className="text-5xl mx-auto" />, label: "Edit as a teacher" },
 ];
 const HeadProfile = ({ activeSection, onSectionChange }: HeadProfileProps) => {
   return (

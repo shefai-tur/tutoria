@@ -51,9 +51,23 @@ const CreateTeacher = () => {
    ]);
 
 const hasNoValidSlots = () => {
-	if (!slots || slots.length === 0) return true;
-	return slots.some(slot => !slot.days || slot.days.length === 0);
-};
+		// helper to convert "HH:MM" to minutes
+		const toMinutes = (t: string) => {
+			const [hh = "0", mm = "0"] = (t || "0:00").split(":");
+			return parseInt(hh, 10) * 60 + parseInt(mm, 10);
+		};
+		// If any slot has duration less than 15 minutes => invalid
+		if (
+			slots.some((slot) => {
+				const start = slot.start ?? "00:00";
+				const end = slot.end ?? "00:00";
+				return toMinutes(end) - toMinutes(start) < 15;
+			})
+		)
+			return true;
+		return slots.some(slot => !slot.days || slot.days.length === 0);
+	};
+
    useEffect(() => {
 	console.log(hasNoValidSlots() ? "No valid availability slots" : "Valid availability slots");
 	

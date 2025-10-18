@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const days = ["SA", "SU", "MO", "TU", "WE", "TH", "FR"];
 
@@ -16,6 +16,19 @@ const TimeSlotSelector = ({ value, onChange }: TimeSlotSelectorProps) => {
   const [start, setStart] = useState(value?.start || "20:00");
   const [end, setEnd] = useState(value?.end || "21:00");
   const [selectedDays, setSelectedDays] = useState<string[]>(value?.days || []);
+
+  // Keep internal state in sync when parent updates the `value` prop
+  useEffect(() => {
+    if (!value) return;
+    if (value.start !== start) setStart(value.start);
+    if (value.end !== end) setEnd(value.end);
+    // shallow compare arrays to avoid unnecessary sets
+    const daysChanged =
+      (value.days?.length || 0) !== (selectedDays?.length || 0) ||
+      (value.days || []).some((d, i) => d !== selectedDays[i]);
+    if (daysChanged) setSelectedDays(value.days || []);
+    // do NOT call onChange here — this effect only mirrors incoming props
+  }, [value]);
 
   const handleDayToggle = (day: string) => {
     const updated =

@@ -17,6 +17,8 @@ export default function Availability({slots, setSlots}: {slots: Slot[], setSlots
   const removeSlot = (i: number) =>
     setSlots(slots.filter((_, idx) => idx !== i));
 
+ 
+
 
   return (
     <div className="space-y-3">

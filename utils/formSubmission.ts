@@ -54,7 +54,7 @@ export async function updateTeacher (token: string,id: string, data: FormType) {
     }
     if (token) {
         try {
-            const response = await FetchApi.put(`/teacher-profile/${id}`, data, {'Authorization': `Bearer ${token}`});
+            const response = await FetchApi.put(`/teacher-profile/${id}/`, data, {'Authorization': `Bearer ${token}`});
             return response;
         } catch (error) {
             throw new Error((error as {message?: string} | any).message || "Error creating teacher");

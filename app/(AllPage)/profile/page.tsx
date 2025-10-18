@@ -6,6 +6,7 @@ import EducationInfo from "@/app/Components/EducationInfo";
 import TuitionInfo from "@/app/Components/TuitionInfo";
 import PersonalInfo from "@/app/Components/PersonalInfo";
 import CreateTeacher from "@/app/Components/CreateTeacher";
+import EditTeacher from "@/app/Components/EditTeacher";
 const profile = () => {
   const [activeSection, setActiveSection] = useState("education");
   return (
@@ -25,6 +26,7 @@ const profile = () => {
           {activeSection === "tuition" && <TuitionInfo />}
           {activeSection === "personal" && <PersonalInfo />}
           {activeSection === "register" && <CreateTeacher />}
+          {activeSection === "edit" && <EditTeacher />}
 
         </div>
       </div>

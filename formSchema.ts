@@ -1,6 +1,7 @@
 import {z} from 'zod';
 
 export const formSchema = z.object({
+    id: z.string().optional(),
     bio: z.string().min(10, 'Bio must be at least 10 characters long').max(500, 'Bio must be at most 500 characters long'),
     min_salary: z.number().min(500, 'Minimum salary must be at least 500'),
     experience_years: z.number(),

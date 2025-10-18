@@ -8,10 +8,11 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import { useGradesByMedium,useMedium, useSubjects } from "@/utils/Hooks/FormDataHook";
 import Loading from "./Loading";
-import { updateTeacher, updateAvailability } from "@/utils/formSubmission";
+import { updateTeacher, createAvailability } from "@/utils/formSubmission";
 import TagForm from "./TagForm";
 import MultiSelect from "./MultiSelect";
 import Availability, { Slot } from "./Availability";
+import { getSlots, getTeacherProfile } from "@/utils/fetchFormInfo";
 
 type FormType = z.infer<typeof formSchema>;
 
@@ -21,7 +22,12 @@ type EditTeacherProps = {
 	teacherId?: string;
 };
 
-const EditTeacher = ({ initialData, initialSlots, teacherId }: EditTeacherProps) => {
+const EditTeacher = () => {
+	const {data: session} = useSession();
+	const [initialData, setInitialData] = useState<Partial<FormType> | undefined>(undefined);
+	const [teacherApiId, setTeacherApiId] = useState<string | undefined>(undefined);
+	
+	
 	const defaultValues: FormType = {
 		bio: initialData?.bio || "",
 		min_salary: initialData?.min_salary || 500,
@@ -51,35 +57,141 @@ const EditTeacher = ({ initialData, initialSlots, teacherId }: EditTeacherProps)
 	const watchedMediums = watch("medium_list");
 	const watchedGrades = watch("grade_list");
 
-	const [slots, setSlots] = useState<Slot[]>(
-		initialSlots || [{ start: "16:00", end: "21:00", days: ["MO", "WE", "TU", "TH", "SA", "SU"] }]
+	const [slots, setSlots] = useState<Slot[]>([{ start: "16:00", end: "21:00", days: ["MO"] }]
 	);
 
 	const hasNoValidSlots = () => {
-		if (!slots || slots.length === 0) return true;
+		// helper to convert "HH:MM" to minutes
+		const toMinutes = (t: string) => {
+			const [hh = "0", mm = "0"] = (t || "0:00").split(":");
+			return parseInt(hh, 10) * 60 + parseInt(mm, 10);
+		};
+		// If any slot has duration less than 15 minutes => invalid
+		if (
+			slots.some((slot) => {
+				const start = slot.start ?? "00:00";
+				const end = slot.end ?? "00:00";
+				return toMinutes(end) - toMinutes(start) < 15;
+			})
+		)
+			return true;
 		return slots.some(slot => !slot.days || slot.days.length === 0);
 	};
 
+	const initialDataSet = () => {
+		// When profile arrives, reset the form with the latest mapped defaults
+		if (initialData) {
+			const toIdArray = (arr?: any[]) =>
+				(arr
+					? arr
+							.map((item) => {
+								if (item == null) return undefined;
+								if (typeof item === "string") return item;
+								if (typeof item === "number") return String(item);
+								if (typeof item === "object" && "id" in item) return String((item as any).id);
+								return undefined;
+							})
+							.filter((v): v is string => v !== undefined)
+					: []) as string[];
+
+			reset({
+				bio: initialData?.bio || "",
+				min_salary: initialData?.min_salary || 500,
+				experience_years: initialData?.experience_years || 0,
+				gender: initialData?.gender || "male",
+				teaching_mode: initialData?.teaching_mode || "online",
+				subject_list: toIdArray(initialData?.subject_list),
+				medium_list: toIdArray(initialData?.medium_list),
+				grade_list: toIdArray(initialData?.grade_list),
+				preferred_distance: initialData?.preferred_distance || 5,
+			});
+		}
+	};
+	useEffect(() => {
+		const id = (session as any)?.id_token;
+
+		async function fetchSlots(id: string){
+			if(id){
+				const data = await getSlots(id);
+				if(data){
+					// Group backend slots (one row per day) into Availability Slot[] and sort by start time
+					const grouped: Record<string, Slot & { days: string[] }> = (data as any[]).reduce((acc, item) => {
+						const rawStart: string = item.start_time ?? "";
+						const rawEnd: string = item.end_time ?? "";
+						const start = rawStart.length >= 5 ? rawStart.slice(0, 5) : rawStart;
+						const end = rawEnd.length >= 5 ? rawEnd.slice(0, 5) : rawEnd;
+
+						const key = `${start}-${end}`;
+						if (!acc[key]) acc[key] = { start, end, days: [] };
+
+						const days = typeof item.days_of_week === "string"
+							? item.days_of_week.split(",").map((d: string) => d.trim()).filter(Boolean)
+							: [];
+
+						days.forEach((d: string) => {
+							if (!acc[key].days.includes(d)) acc[key].days.push(d);
+						});
+
+						return acc;
+					}, {});
+
+					// canonical week order for consistent day ordering
+					const weekOrder = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+					const toMinutes = (t: string) => {
+						const [hh = "0", mm = "0"] = t.split(":");
+						return parseInt(hh, 10) * 60 + parseInt(mm, 10);
+					};
+
+					const slotsArr: Slot[] = Object.values(grouped)
+						.map(s => ({
+							start: s.start,
+							end: s.end,
+							days: s.days.sort((a, b) => weekOrder.indexOf(a) - weekOrder.indexOf(b)),
+						}))
+						.sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
+
+					setSlots(slotsArr);
+					console.log("Fetched slots:", slotsArr);
+				}
+		}
+	}
+		async function fetchData(id:string) {
+			
+			if(id){
+				const data = await getTeacherProfile(id);
+				const response = data[0];
+				if (response){
+					// capture teacher id returned by API so we can call update endpoints
+					if (response.id) setTeacherApiId(String(response.id));
+					setInitialData({
+						bio: response.bio,
+						min_salary: response.min_salary,
+						experience_years: response.experience_years,
+						gender: response.gender,
+						teaching_mode: response.teaching_mode,
+						subject_list: response.subject_list,
+						medium_list: response.medium_list,
+						grade_list: response.grade_list,
+						preferred_distance: response.preferred_distance,
+					});
+					initialDataSet();
+				}
+			}
+		}
+		if(id){
+			console.count("Fetching teacher profile and slots");
+			fetchData(id);
+			fetchSlots(id);
+		}
+	},[session]);
 	useEffect(() => {
 		console.log(hasNoValidSlots() ? "No valid availability slots" : "Valid availability slots");
 		console.log("Availability slots updated:", slots);
 	}, [slots]);
 
 	// Reset form when initialData changes
-	useEffect(() => {
-		if (initialData) {
-			reset(defaultValues);
-		}
-	}, [initialData, reset]);
-
-	// Update slots when initialSlots changes
-	useEffect(() => {
-		if (initialSlots) {
-			setSlots(initialSlots);
-		}
-	}, [initialSlots]);
 	
-	const {data: session} = useSession();
+	
 	const {mediums, loading: mediumsLoading, error: mediumsError} = useMedium();
 	const  {grades, loading: gradesLoading, error: gradesError} = useGradesByMedium({medium_id: watchedMediums}); 
 	const {subjects, loading: subjectsLoading, error: subjectsError} = useSubjects({grade_id: watchedGrades});
@@ -100,23 +212,26 @@ const EditTeacher = ({ initialData, initialSlots, teacherId }: EditTeacherProps)
 			alert("You must be logged in to update the profile.");
 			return;
 		}
-		if (!teacherId) {
-			alert("Teacher ID is required for updating.");
-			return;
-		}
+        
 		if (hasNoValidSlots()) {
 			alert("Please add at least one availability slot with selected days or remove the empty slots.");
 			return;
 		}
 		try {
-			const response = await updateTeacher(idToken, teacherId, data);
+			const idToUse = teacherApiId; // id from fetched profile
+			if (!idToUse) {
+				alert("Unable to determine teacher id for update.");
+				return;
+			}
+
+			const response = await updateTeacher(idToken, idToUse, data);
 			if (response) {
 				alert("Profile updated successfully!");
-				const slotResponse = await updateAvailability(idToken, teacherId, slots);
+				const slotResponse = await createAvailability(idToken, slots);
 				if (slotResponse) {
-					alert("Availability slots updated successfully!");
+					alert("Availability slots submitted successfully!");
 				} else {
-					alert("Failed to update availability slots.");
+					alert("Failed to submit availability slots.");
 				}
 			}
 		} catch (error: any) {

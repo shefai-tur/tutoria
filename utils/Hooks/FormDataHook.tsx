@@ -30,7 +30,9 @@ export const useMedium = () => {
                 });
             }
         }    
-        fetchData();    
+        if(idToken){
+            fetchData();
+        }  
 
     }, [session]);
 
@@ -63,13 +65,11 @@ export const useGradesByMedium = ({medium_id}: {medium_id: string[]}) => {
                 }); 
             }
         }
-        if(medium_id && medium_id.length > 0) {
+        if(medium_id && medium_id.length > 0 && session) {
             fetchGrades();
-        }else{
-            setGrades([]);
         }
 
-    }, [medium_id, session]);
+    }, [medium_id]);
     return { grades, loading, error };
 };
 
@@ -99,12 +99,10 @@ export const useSubjects = ({grade_id}: {grade_id: string[]}) => {
                 });
             }
         }
-        if(grade_id && grade_id.length > 0) {
+        if(grade_id && grade_id.length > 0 && idToken) {
             fetchGrades();
-        }else{
-            setSubjects([]);
         }
 
-    }, [grade_id, session]);
+    }, [grade_id]);
     return { subjects, loading, error };
 };
