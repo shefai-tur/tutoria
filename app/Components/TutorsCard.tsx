@@ -102,11 +102,11 @@ const TutorsCard = () => {
           key={tutor.id}
           className="card bg-base-100 shadow-xl  border border-quaternary4 rounded-lg transition-transform transform hover:scale-105"
         >
-          <figure className="px-10 pt-5">
+          <figure className="md:px-10 md:pt-5 pt-2.5">
             <img
               src={tutor.img}
               alt="Tutor"
-              className="rounded-full border-2 border-dashed border-tertiary3 w-40 h-40 object-cover"
+              className="rounded-full border-2 border-dashed border-tertiary3 md:w-40 md:h-40 w-20 h-20 object-cover"
             />
           </figure>
           <div className="card-body items-center text-center">
